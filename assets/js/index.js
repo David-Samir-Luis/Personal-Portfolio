@@ -1,5 +1,13 @@
 // ^ Write your JavaScript code here
 
+
+
+
+let themeColorsBtns = Array.from(
+  document.querySelector("#theme-colors-grid").children
+);
+let closeSettings = document.querySelector("#close-settings");
+let fontsBtns = document.querySelectorAll(".font-option");
 let sections = document.querySelectorAll(".nav-section");
 let darkLighModeBtn = document.querySelector("#theme-toggle-button");
 let portfolioTabsBtn = document.querySelectorAll(".portfolio-filter");
@@ -14,7 +22,106 @@ let settingsSidebar = document.querySelector("#settings-sidebar");
 let scrollToTop = document.querySelector("#scroll-to-top");
 let index = 0;
 let totalCards = 6;
+
+
+// restore font
+if (localStorage.getItem('selectedFont')!==null) {
+   let dataFont= localStorage.getItem('selectedFont')
+   let selectedFont=document.querySelector(`[data-font=${dataFont}]`)
+   fontOptions(selectedFont);
+}
+
+// restore mode light or dark
+if (localStorage.getItem('mode') != null) {
+  if (localStorage.getItem('mode')=='dark') {
+    document.documentElement.classList.add("dark");
+  } else {
+        document.documentElement.classList.remove("dark");
+  }
+}
+if (localStorage.getItem('selectedTheme') != null) {
+  let title = localStorage.getItem('selectedTheme');
+  let theme = document.querySelector(`[title='${title}']`)
+   changeTheme(theme);
+}
+
+
 //* events
+themeColorsBtns.forEach((btn) => {
+  btn.addEventListener("click", function (e) {
+    changeTheme(e.currentTarget);
+    localStorage.setItem('selectedTheme',e.currentTarget.getAttribute('title'))    
+  });
+});
+
+// close the sidebar
+closeSettings.addEventListener("click", function () {
+  settingsToggleBtn.style.right = "0";
+  settingsSidebar.classList.add("translate-x-full");
+});
+
+// event to change fonts
+fontsBtns.forEach((btn) => {
+  btn.addEventListener("click", function (e) {
+    fontOptions(e.currentTarget);
+    localStorage.setItem('selectedFont',e.currentTarget.getAttribute('data-font'))    
+
+  });
+});
+
+function changeTheme(currentTarget) {
+  document.documentElement.style.cssText = `--color-primary:${currentTarget.getAttribute(
+    "data-primary"
+  )}; --color-secondary: ${currentTarget.getAttribute(
+    "data-secondary"
+  )}; --color-accent: ${currentTarget.style.backgroundColor};`;
+
+  themeColorsBtns.forEach((btn) => {
+    btn.classList.remove(
+      "ring-2",
+      "ring-primary",
+      "ring-offset-2",
+      "ring-offset-white",
+      "dark:ring-offset-slate-900"
+    );
+  });
+
+  currentTarget.classList.add(
+    "ring-2",
+    "ring-primary",
+    "ring-offset-2",
+    "ring-offset-white",
+    "dark:ring-offset-slate-900"
+  );
+}
+function fontOptions(currentTarget) {
+  document.body.classList.remove(
+    `font-cairo`,
+    `font-tajawal`,
+    `font-alexandria`
+  );
+  document.body.classList.add(
+    `font-${currentTarget.getAttribute("data-font")}`
+  );
+
+  fontsBtns.forEach((btnUnchecked) => {
+    btnUnchecked.classList.remove(
+      "active",
+      "border-primary",
+      "bg-slate-50",
+      "dark:bg-slate-800"
+    );
+    btnUnchecked.classList.add("border-slate-200", "dark:border-slate-700");
+  });
+  currentTarget.classList.add(
+    "active",
+    "border-primary",
+    "bg-slate-50",
+    "dark:bg-slate-800"
+  );
+  currentTarget.classList.remove("border-slate-200", "dark:border-slate-700");
+}
+
 // just to stop Propagation and close the side bar when clicking anywhere in the side bar
 settingsSidebar.addEventListener("click", function (e) {
   e.stopPropagation();
@@ -68,6 +175,12 @@ window.addEventListener("scroll", function () {
 //* modes
 darkLighModeBtn.addEventListener("click", function () {
   document.documentElement.classList.toggle("dark");
+
+  if (document.documentElement.classList.contains("dark")) {
+    localStorage.setItem('mode','dark');
+  } else {
+    localStorage.setItem('mode','light');
+  }
 });
 
 function dotBtnColor() {
