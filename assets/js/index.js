@@ -6,6 +6,7 @@
 let themeColorsBtns = Array.from(
   document.querySelector("#theme-colors-grid").children
 );
+let resetSettings = document.querySelector("#reset-settings");
 let closeSettings = document.querySelector("#close-settings");
 let fontsBtns = document.querySelectorAll(".font-option");
 let sections = document.querySelectorAll(".nav-section");
@@ -39,6 +40,8 @@ if (localStorage.getItem('mode') != null) {
         document.documentElement.classList.remove("dark");
   }
 }
+
+// restore selectedTheme
 if (localStorage.getItem('selectedTheme') != null) {
   let title = localStorage.getItem('selectedTheme');
   let theme = document.querySelector(`[title='${title}']`)
@@ -47,6 +50,22 @@ if (localStorage.getItem('selectedTheme') != null) {
 
 
 //* events
+
+resetSettings.addEventListener('click',function(){
+  // font tajawal
+   fontOptions(fontsBtns[1]);
+    localStorage.setItem('selectedFont','tajawal')
+    
+    // theme Purple Blue
+     changeTheme(themeColorsBtns[0]);
+    localStorage.setItem('selectedTheme','Purple Blue')
+    
+    // close sidebar 
+    settingsToggleBtn.style.right = "0";
+  settingsSidebar.classList.add("translate-x-full");
+})
+
+
 themeColorsBtns.forEach((btn) => {
   btn.addEventListener("click", function (e) {
     changeTheme(e.currentTarget);
