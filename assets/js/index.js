@@ -26,18 +26,18 @@ let totalCards = 6;
 
 
 // restore font
-if (localStorage.getItem('selectedFont')!==null) {
-   let dataFont= localStorage.getItem('selectedFont')
-   let selectedFont=document.querySelector(`[data-font=${dataFont}]`)
-   fontOptions(selectedFont);
+if (localStorage.getItem('selectedFont') !== null) {
+  let dataFont = localStorage.getItem('selectedFont')
+  let selectedFont = document.querySelector(`[data-font=${dataFont}]`)
+  fontOptions(selectedFont);
 }
 
 // restore mode light or dark
 if (localStorage.getItem('mode') != null) {
-  if (localStorage.getItem('mode')=='dark') {
+  if (localStorage.getItem('mode') == 'dark') {
     document.documentElement.classList.add("dark");
   } else {
-        document.documentElement.classList.remove("dark");
+    document.documentElement.classList.remove("dark");
   }
 }
 
@@ -45,23 +45,23 @@ if (localStorage.getItem('mode') != null) {
 if (localStorage.getItem('selectedTheme') != null) {
   let title = localStorage.getItem('selectedTheme');
   let theme = document.querySelector(`[title='${title}']`)
-   changeTheme(theme);
+  changeTheme(theme);
 }
 
 
 //* events
 
-resetSettings.addEventListener('click',function(){
+resetSettings.addEventListener('click', function () {
   // font tajawal
-   fontOptions(fontsBtns[1]);
-    localStorage.setItem('selectedFont','tajawal')
-    
-    // theme Purple Blue
-     changeTheme(themeColorsBtns[0]);
-    localStorage.setItem('selectedTheme','Purple Blue')
-    
-    // close sidebar 
-    settingsToggleBtn.style.right = "0";
+  fontOptions(fontsBtns[1]);
+  localStorage.setItem('selectedFont', 'tajawal')
+
+  // theme Purple Blue
+  changeTheme(themeColorsBtns[0]);
+  localStorage.setItem('selectedTheme', 'Purple Blue')
+
+  // close sidebar 
+  settingsToggleBtn.style.right = "0";
   settingsSidebar.classList.add("translate-x-full");
 })
 
@@ -69,7 +69,7 @@ resetSettings.addEventListener('click',function(){
 themeColorsBtns.forEach((btn) => {
   btn.addEventListener("click", function (e) {
     changeTheme(e.currentTarget);
-    localStorage.setItem('selectedTheme',e.currentTarget.getAttribute('title'))    
+    localStorage.setItem('selectedTheme', e.currentTarget.getAttribute('title'))
   });
 });
 
@@ -83,7 +83,7 @@ closeSettings.addEventListener("click", function () {
 fontsBtns.forEach((btn) => {
   btn.addEventListener("click", function (e) {
     fontOptions(e.currentTarget);
-    localStorage.setItem('selectedFont',e.currentTarget.getAttribute('data-font'))    
+    localStorage.setItem('selectedFont', e.currentTarget.getAttribute('data-font'))
 
   });
 });
@@ -196,9 +196,9 @@ darkLighModeBtn.addEventListener("click", function () {
   document.documentElement.classList.toggle("dark");
 
   if (document.documentElement.classList.contains("dark")) {
-    localStorage.setItem('mode','dark');
+    localStorage.setItem('mode', 'dark');
   } else {
-    localStorage.setItem('mode','light');
+    localStorage.setItem('mode', 'light');
   }
 });
 
@@ -223,9 +223,8 @@ function slide() {
   if (index < 0) index = totalCards - 3;
   dotBtnColor();
   let cardWidth = testimonialCard.offsetWidth;
-  testimonialsCarousel.style.cssText = `transform: translateX(${
-    index * cardWidth
-  }px);`;
+  testimonialsCarousel.style.cssText = `transform: translateX(${index * cardWidth
+    }px);`;
 }
 
 portfolioTabsBtn.forEach((tabBtn) => {
@@ -233,10 +232,8 @@ portfolioTabsBtn.forEach((tabBtn) => {
     // change selected btn color
     changePortfolioTabBtnColor(tabBtn);
     // all contents display none
-    hideAllContent(function () {
-      //callback displayContent
-      displayContent(tabBtn);
-    });
+    hideAllContent();
+    displayContent(tabBtn)
   });
 });
 
@@ -308,32 +305,31 @@ function changePortfolioTabBtnColor(tabBtn) {
   );
 }
 
-function hideAllContent(callback) {
+function hideAllContent() {
   // all contents display none
   portfolioAllContents.forEach((content) => {
     content.classList.add("hiddeContent");
   });
-
-  setTimeout(() => {
-    portfolioAllContents.forEach((content) => {
-      content.classList.add("display-none");
-    });
-    callback();
-  }, 300);
 }
 
 function displayContent(tabBtn) {
-  // display content
-  portfolioAllContents.forEach((content) => {
-    if (tabBtn.getAttribute("data-filter") === "all") {
-      content.classList.remove("display-none");
-      content.classList.remove("hiddeContent");
-    } else if (
-      content.getAttribute("data-category") ==
-      tabBtn.getAttribute("data-filter")
-    ) {
-      content.classList.remove("display-none");
-      content.classList.remove("hiddeContent");
-    }
-  });
+  setTimeout(() => {
+    // display content
+    portfolioAllContents.forEach((content) => {
+      if (tabBtn.getAttribute("data-filter") === "all") {
+        content.classList.remove("display-none");
+        requestAnimationFrame(() => { content.classList.remove("hiddeContent"); })
+      } else if (
+        content.getAttribute("data-category") ==
+        tabBtn.getAttribute("data-filter")
+      ) {
+        content.classList.remove("display-none");
+        requestAnimationFrame(() => { content.classList.remove("hiddeContent"); })
+
+      } else {
+        content.classList.add("display-none");
+      }
+    });
+  }, 300);
+
 }
